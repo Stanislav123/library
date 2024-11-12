@@ -1,0 +1,54 @@
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+vector<int> MergeSort(vector<int>& array) {
+    if (array.size() == 1) {
+        return array;
+    }
+
+    vector<int> left(array.begin(), array.begin() + array.size() / 2);
+    left = MergeSort(left);
+
+    vector<int> right(array.begin() + array.size() / 2, array.end());
+    right = MergeSort(right);
+
+    vector<int> result(array.size());
+
+    int l = 0, r = 0, k = 0;
+    while (l < left.size() && r < right.size()) { 
+        if (left[l] <= right[r]) { 
+            result[k] = left[l];
+            l++;
+        }
+        else {
+            result[k] = right[r];
+            r++;
+        }
+        k++;
+    }
+
+    while (l < left.size()) { 
+        result[k] = left[l]; 
+        l++;
+        k++;
+    }  
+    while (r < right.size()) { 
+        result[k] = right[r];
+        r++;
+        k++;
+    }
+
+    return result;
+}
+
+int main() {
+    vector<int> arr = {5, 2, 7, 1, 8, 3};
+    arr = MergeSort(arr);
+    for (int i = 0; i < arr.size(); i++) {
+        cout << arr[i] << " ";
+    }
+    cout << endl;
+    return 0;
+}
