@@ -1,0 +1,18 @@
+nt main() {
+    int Q = 0;
+    int M = 0;
+    long long hash = 0;
+    size_t string_move = 0;
+    
+    std::string s;
+    std::cin >> Q >> M >> s;
+  
+    for(long long x = s.size() - 1; x >= 0; x--) {    
+        hash += s[string_move++]*pow(Q,x);
+    }
+   
+    hash %= M;
+    std::cout << hash;
+    return 0;
+
+}
