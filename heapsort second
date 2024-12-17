@@ -1,0 +1,70 @@
+#include <vector>
+#include <iostream>
+ 
+struct Participan {
+    std::string name;
+    int tasks;
+    int penalty;
+ 
+    bool operator<(const Participan& right) {
+        if(tasks != right.tasks) {
+            return tasks > right.tasks;
+        } else if (penalty != right.penalty) {
+            return penalty < right.penalty;
+        } else {
+            return name < right.name;
+        }
+    }
+};
+ 
+void Heapify(std::vector<Participan>& heap, int n, int i) {
+    int largest = i;   
+    int l = 2*i + 1; 
+    int r = 2*i + 2; 
+ 
+    if (l < n && heap[largest] < heap[l]) {
+        largest = l;
+    }
+ 
+    if (r < n && heap[largest] < heap[r]) {
+        largest = r;
+    }
+ 
+    if (largest != i) {
+        std::swap(heap[i], heap[largest]);
+        Heapify(heap, n, largest);
+    }
+}
+ 
+void HeapSort(std::vector<Participan>& heap, int n) {
+    for (int i = n / 2 - 1; i >= 0; i--) {
+        Heapify(heap, n, i);
+    }
+    for (int i=n-1; i>=0; i--)  {
+        std::swap(heap[0], heap[i]);
+        Heapify(heap, i, 0);
+    }
+}
+ 
+int main() {
+    int number_of_participants = 0;
+    std::cin >> number_of_participants;
+ 
+    std::vector<Participan> heap_of_participants(number_of_participants);
+    
+    std::vector<Participan> result_heap(number_of_participants);
+ 
+    for (int x = 0; x < heap_of_participants.size(); x++) {
+        std::cin >> heap_of_participants[x].name;
+        std::cin >> heap_of_participants[x].tasks;
+        std::cin >> heap_of_participants[x].penalty;
+    }
+    
+    HeapSort(heap_of_participants, number_of_participants);
+    
+    for (Participan par : heap_of_participants) {
+            std::cout << par.name << std::endl;
+    }
+    return 0;
+ 
+}
