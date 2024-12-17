@@ -1,0 +1,66 @@
+void sift_up(std::vector<int>& heap, int index) {
+    if (index == 1) {
+        return;
+    }
+
+    int parent_index = index / 2;
+    if (heap[parent_index] < heap[index]) {
+        std::swap(heap[parent_index], heap[index]);
+        sift_up(heap, parent_index);
+    }
+}
+
+
+void heap_add(std::vector<int>& heap, int key) {
+    heap.push_back(key);
+    int index = heap.size() - 1;
+    sift_up(heap, index);
+} 
+
+std::vector<int> heapsort(const std::vector<int>& array) {
+    // Создадим пустую бинарную кучу.
+    std::vector<int> heap = {0};
+
+    // Вставим в неё по одному все элементы массива, сохраняя свойства кучи.
+    for (const auto& item : array) {
+        heap_add(heap, item);   // код для heap_add можно посмотреть в прошлом уроке
+    }
+
+    // Будем извлекать из неё наиболее приоритетные элементы, удаляя их из кучи.
+    std::vector<int> sortedArray;
+    while (heap.size() > 1) {
+        int max = pop_max(heap);
+        sortedArray.push_back(max);
+    }
+    return sortedArray;
+} 
+
+
+int pop_max(std::vector<int>& heap) {
+    int result = heap[1];
+    heap[1] = heap[heap.size() - 1];
+    heap.pop_back();
+    sift_down(heap, 1);
+    return result;
+}
+
+void sift_down(std::vector<int>& heap, int index) {
+    int left = 2 * index;
+    int right = 2 * index + 1;
+
+    // Нет дочерних узлов
+    if (left >= heap.size()) {
+        return;
+    }
+
+    // проверяем, что есть оба дочерних узла
+    int index_largest = left;
+    if (right < heap.size() && heap[right] > heap[left]) {
+        index_largest = right; 
+    }
+
+    if (heap[index_largest] > heap[index]) {
+        std::swap(heap[index], heap[index_largest]);
+        sift_down(heap, index_largest);
+    }
+} 
