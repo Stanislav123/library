@@ -1,0 +1,81 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <unordered_map>
+ 
+class Root {
+    public:
+    Root(char symbol = 0) : symbol_(symbol) {}
+    char symbol_;
+    std::unordered_map<char, Root*> children;
+    std::vector<int> numbers_requests;
+};
+ 
+ 
+void Handling( Root* trie, const std::vector<std::string>& texts ) {
+    Root* current_node = trie;
+    for(int deq = 0; deq < texts.size(); deq++) {
+        for(int pos = 0; pos < texts[deq].size(); pos++) {
+            if( texts[deq][pos] >= 'A' && texts[deq][pos] <= 'Z') {
+                if (current_node->children.find(texts[deq][pos]) == current_node->children.end()) {
+                    current_node->children[texts[deq][pos]] = new Root(texts[deq][pos]);
+                }
+                current_node = current_node->children[texts[deq][pos]];
+                current_node->numbers_requests.push_back(deq);
+            }
+        }
+        current_node = trie;
+    }
+}
+ 
+std::vector<int> Find(std:: string text, Root* trie) {
+    Root* current_node = trie;
+    for( char s : text) {
+        if(current_node->children.find(s) != current_node->children.end()) {
+            current_node = current_node->children[s];
+            for(auto x : current_node->numbers_requests) {
+            }
+        } else {
+            return {};
+        }
+    }
+    return current_node->numbers_requests;
+}
+ 
+ 
+int main() {
+    
+    Root trie;
+    int counter = 0;
+    std::string text;
+    std::getline(std::cin, text);
+    counter = stoi(text);
+    std::vector<std::string> texts;
+    while (counter) {
+        counter--;
+        std::getline(std::cin, text);
+        texts.push_back(text);
+    }
+    
+    std::sort(texts.begin(), texts.end());
+    Handling(&trie, texts);
+    std::getline(std::cin, text);
+    counter = stoi(text);
+    
+    while (counter) {
+        counter--;
+        std::getline(std::cin, text);
+        if(text.empty()) {
+            for (auto text2 : texts) {
+                std::cout << text2 << std::endl; // << '\n';
+             }
+            return 0;
+        }
+
+        std::vector<int>  answer = Find(text, &trie);
+        for (int x : answer) {
+            std::cout << texts[x] << std::endl; //'\n';
+        }
+    }
+    return 0;
+}
