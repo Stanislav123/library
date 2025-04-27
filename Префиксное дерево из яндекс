@@ -1,0 +1,77 @@
+#include <iostream>
+#include <vector>
+#include <unordered_map>
+#include <set>
+
+
+class Root {
+    public:
+    Root(char symbol = 0) : symbol_(symbol) {}
+    char symbol_;
+    bool teminal_flag_ = false;
+    std::unordered_map<char, Root*> children;
+};
+ 
+ 
+void AddString (std::string text, Root* trie ) {
+    Root* curret_node = trie;
+    for (int i = 0 ; i < text.size(); i++) {
+        if(curret_node->children.find(text[i]) == curret_node->children.end()) {
+            curret_node->children[text[i]] = new Root(text[i]);
+        }
+        curret_node = curret_node->children[text[i]];
+    }
+    curret_node->teminal_flag_ = true;
+}
+ 
+int FindAny(std::string text, Root* trie) {
+    Root current_node = *trie;
+    for(int pos = 0; pos < text.size(); pos++) {
+        if (text[pos] >= 'A' && text[pos] <= 'Z') {
+            char symbol = text[pos];
+                if ( current_node.children.count(symbol) ) {
+                    current_node = *current_node.children[symbol];
+                    if (current_node.teminal_flag_) {
+                        return pos;
+                    }
+                } else {
+                    return -1;
+                }
+        }
+    }
+    return -1;
+}
+ 
+int main() {
+    int counter = 0;
+    std::string text;
+    std::getline(std::cin, text);
+    counter = stoi(text);
+    std::set<std::string> texts;
+    while (counter) {
+        counter--;
+        std::getline(std::cin, text);
+        texts.emplace(text);
+    }
+    std::getline(std::cin, text);
+    counter = stoi(text);
+    while (counter) {
+        Root trie;
+        counter--;
+        std::getline(std::cin, text);
+        if(text.empty()) {
+            for (auto text2 : texts) {
+                std::cout << text2 << '\n';
+            }
+            return 0;
+        }
+        AddString(text, &trie);
+        
+    for (auto text2 : texts) {         
+            if(FindAny(text2, &trie) > -1) {
+              std::cout << text2 << '\n';
+            }
+        }
+    }
+    return 0;
+}
